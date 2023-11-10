@@ -39,7 +39,7 @@ class Game:
 
         self.movement = [False, False]
 
-        # setup our psuedo camera
+        # setup our pseudo camera
         self.scroll = [0, 0]
 
     def perform_quit(self):
@@ -83,7 +83,7 @@ class Game:
 
             # adjust camera position
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
-            self.scroll[1] += ((self.player.rect().centery - 20 )- self.display.get_height() / 2 - self.scroll[1]) / 30
+            self.scroll[1] += ((self.player.rect().centery - 20 )- self.display.get_height() / 2 - self.scroll[1]) / 8
             # calculate integer scroll for rendering to fix jitter
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
