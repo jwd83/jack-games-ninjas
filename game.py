@@ -3,6 +3,7 @@ import pygame
 from scripts.entities import PhysicsEntity
 from scripts.utils import load_image, load_images
 from scripts.tilemap import Tilemap
+from scripts.clouds import Clouds
 
 class Game:
     def __init__(self):
@@ -24,16 +25,22 @@ class Game:
             'large_decor': load_images('tiles/large_decor'),
             'stone': load_images('tiles/stone'),
             'player': load_image('entities/player.png'),
+            'background': load_image('background.png'),
+            'clouds': load_images('clouds')
         }
         # print our loaded assets
         # print(self.assets)
+
+        self.clouds = Clouds(self.assets['clouds'], count=16)
 
         self.player = PhysicsEntity(self, 'player', (75,75), (8,15))
 
         self.tilemap = Tilemap(self, tile_size = 16)
 
-
         self.movement = [False, False]
+
+        # setup our psuedo camera
+        self.scroll = [0, 0]
 
     def perform_quit(self):
         pygame.quit()
@@ -54,6 +61,9 @@ class Game:
                     self.movement[0] = True
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     self.movement[1] = True
+                if event.key == pygame.K_SPACE or event.key == pygame.K_w or event.key == pygame.K_UP:
+                    if self.player.velocity[1] >= 0:
+                        self.player.velocity[1] = -3
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -61,21 +71,35 @@ class Game:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     self.movement[1] = False
 
-    def clear_screen(self):
+    def draw_background(self):
         # let's go for a sky blue
-        self.display.fill((15,220,250))
+        # self.display.fill((15,220,250))
+        self.display.blit(self.assets['background'], (0,0))
 
     def run(self):
 
         while True:
-            self.clear_screen()
+            self.draw_background()
 
-            self.tilemap.render(self.display)
+            # adjust camera position
+            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
+            self.scroll[1] += ((self.player.rect().centery - 20 )- self.display.get_height() / 2 - self.scroll[1]) / 30
+            # calculate integer scroll for rendering to fix jitter
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
+            # draw our clouds
+            self.clouds.update()
+            self.clouds.render(self.display, offset=render_scroll)
+
+            # draw our tilemap
+            self.tilemap.render(self.display, offset=render_scroll)
 
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display)
+            self.player.render(self.display, offset=render_scroll)
 
-            print(self.tilemap.physics_rects_around(self.player.pos))
+            # print(self.tilemap.physics_rects_around(self.player.pos))
+
+
 
             # we finished drawing our frame, lets render it to the screen and
             # get our input events ready for the next frame and sleep for a bit

@@ -23,7 +23,7 @@ class Tilemap:
         # this will be for arbitrary tiles, their position is a raw pixel
         self.offgrid_tiles = []
 
-        for i in range(10):
+        for i in range(100):
             # horizontal grass
             self.tilemap[str(3 + i) + ';10'] = {'type': 'grass', 'variant': 1, 'pos': (3 + i, 10)}
 
@@ -52,12 +52,12 @@ class Tilemap:
         return rects
 
 
-    def render(self, surf):
+    def render(self, surf, offset=(0,0)):
         # draw the offgrid tiles first
         for tile in self.offgrid_tiles:
-            surf.blit(self.game.assets[tile['type']][tile['variant']], tile['pos'])
+            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0],tile['pos'][1] - offset[1]))
 
         # draw the tiles on the grid
         for loc in self.tilemap:
             tile = self.tilemap[loc]
-            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size))
+            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
