@@ -1,7 +1,7 @@
 import sys
 import pygame
-from scripts.entities import PhysicsEntity
-from scripts.utils import load_image, load_images
+from scripts.entities import PhysicsEntity, Player
+from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
 
@@ -11,8 +11,8 @@ class Game:
         pygame.init()
         pygame.display.set_caption('Jack Ninjas!')
 
-        # our window is 1280x720, but we want to render at a lower resolution
-        self.screen = pygame.display.set_mode((1920, 1080))
+        # set our output windows size
+        self.screen = pygame.display.set_mode((1280, 720))
 
         # we will render at 320x180 and then scale it up by 4x
         self.display = pygame.Surface((320, 180))
@@ -26,14 +26,19 @@ class Game:
             'stone': load_images('tiles/stone'),
             'player': load_image('entities/player.png'),
             'background': load_image('background.png'),
-            'clouds': load_images('clouds')
+            'clouds': load_images('clouds'),
+            'player/idle': Animation(load_images('entities/player/idle'), img_dur=8),
+            'player/run': Animation(load_images('entities/player/run'), img_dur=4),
+            'player/jump': Animation(load_images('entities/player/jump'), img_dur=5),
+            'player/slide': Animation(load_images('entities/player/slide'), img_dur=5),
+            'player/wall_slide': Animation(load_images('entities/player/wall_slide'), img_dur=5),
+
         }
         # print our loaded assets
-        # print(self.assets)
+        print(self.assets)
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
-
-        self.player = PhysicsEntity(self, 'player', (75,75), (8,15))
+        self.player = Player(self, (75,75), (8,15))
 
         self.tilemap = Tilemap(self, tile_size = 16)
 
