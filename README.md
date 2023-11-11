@@ -5,3 +5,7 @@ An adaption and implementation of the the public domain game from YouTuber [DaFl
 
 
 https://www.youtube.com/watch?v=2gABYM5M0ww
+
+## Adjustments
+* 16:9 aspect ratio
+* Metroid Style Space Jump
