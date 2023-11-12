@@ -3,18 +3,22 @@ import pygame
 GRAVITY = 0.1
 MAX_FALL_SPEED = 5
 
+
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
         self.game = game
         self.type = e_type
 
-        self.pos = list(pos) # create a new list so we don't modify or share with another entity
+        # create a new list so we don't modify or share with another entity
+        self.pos = list(pos)
         # x position is first element in pos list
         # y position is second element in pos list
 
-        self.size = list(size) # create a new list so we don't modify or share with another entity
+        # create a new list so we don't modify or share with another entity
+        self.size = list(size)
         self.velocity = [0, 0]
-        self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
+        self.collisions = {'up': False, 'down': False,
+                           'left': False, 'right': False}
         self.action = ''
         self.anim_offset = (-3, -3)
         self.flip = False
@@ -24,16 +28,19 @@ class PhysicsEntity:
         # only change the animation if it's different
         if action != self.action:
             self.action = action
-            self.animation = self.game.assets[self.type + '/' + self.action].copy()
+            self.animation = self.game.assets[self.type +
+                                              '/' + self.action].copy()
             self.animation.frame = 0
 
     def rect(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 
-    def update(self, tilemap, movement = (0, 0)):
-        self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
+    def update(self, tilemap, movement=(0, 0)):
+        self.collisions = {'up': False, 'down': False,
+                           'left': False, 'right': False}
 
-        frame_movement = [movement[0] + self.velocity[0], movement[1] + self.velocity[1]]
+        frame_movement = [movement[0] + self.velocity[0],
+                          movement[1] + self.velocity[1]]
 
         # handle x axis movement
         self.pos[0] += frame_movement[0]
@@ -77,7 +84,7 @@ class PhysicsEntity:
 
         self.animation.update()
 
-    def render(self, surf, offset=(0,0)):
+    def render(self, surf, offset=(0, 0)):
         surf.blit(
             pygame.transform.flip(self.animation.img(), self.flip, False),
             (
@@ -86,12 +93,13 @@ class PhysicsEntity:
             )
         )
 
+
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'player', pos, size)
         self.air_time = 0
 
-    def update(self, tilemap, movement=(0,0)):
+    def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement)
         self.air_time += 1
 
@@ -99,11 +107,11 @@ class Player(PhysicsEntity):
             self.air_time = 0
 
         if self.air_time > 4:
-            self.set_action('jump')
+            if self.velocity[1] < 0:
+                self.set_action('jump')
+            else:
+                self.set_action('fall')
         elif movement[0] != 0:
             self.set_action('run')
         else:
             self.set_action('idle')
-
-
-

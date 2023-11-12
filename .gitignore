@@ -1,3 +1,6 @@
 # Ignore Python compiled files
 *.pyc
 __pycache__/
+
+# ignore macos .ds_store files
+.DS_Store

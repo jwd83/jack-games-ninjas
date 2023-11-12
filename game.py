@@ -5,6 +5,7 @@ from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
 
+
 class Game:
     def __init__(self):
 
@@ -30,6 +31,7 @@ class Game:
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=8),
             'player/run': Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump': Animation(load_images('entities/player/jump'), img_dur=5),
+            'player/fall': Animation(load_images('entities/player/fall')),
             'player/slide': Animation(load_images('entities/player/slide'), img_dur=5),
             'player/wall_slide': Animation(load_images('entities/player/wall_slide'), img_dur=5),
 
@@ -38,9 +40,9 @@ class Game:
         print(self.assets)
 
         self.clouds = Clouds(self.assets['clouds'], count=16)
-        self.player = Player(self, (75,75), (8,15))
+        self.player = Player(self, (75, 75), (8, 15))
 
-        self.tilemap = Tilemap(self, tile_size = 16)
+        self.tilemap = Tilemap(self, tile_size=16)
 
         self.movement = [False, False]
 
@@ -79,7 +81,7 @@ class Game:
     def draw_background(self):
         # let's go for a sky blue
         # self.display.fill((15,220,250))
-        self.display.blit(self.assets['background'], (0,0))
+        self.display.blit(self.assets['background'], (0, 0))
 
     def run(self):
 
@@ -87,8 +89,10 @@ class Game:
             self.draw_background()
 
             # adjust camera position
-            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
-            self.scroll[1] += ((self.player.rect().centery - 20 )- self.display.get_height() / 2 - self.scroll[1]) / 8
+            self.scroll[0] += (self.player.rect().centerx -
+                               self.display.get_width() / 2 - self.scroll[0]) / 30
+            self.scroll[1] += ((self.player.rect().centery - 20) -
+                               self.display.get_height() / 2 - self.scroll[1]) / 8
             # calculate integer scroll for rendering to fix jitter
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
@@ -99,18 +103,19 @@ class Game:
             # draw our tilemap
             self.tilemap.render(self.display, offset=render_scroll)
 
-            self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
+            self.player.update(
+                self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
 
             # print(self.tilemap.physics_rects_around(self.player.pos))
 
-
-
             # we finished drawing our frame, lets render it to the screen and
             # get our input events ready for the next frame and sleep for a bit
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
+            self.screen.blit(pygame.transform.scale(
+                self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.get_events()
-            self.clock.tick(60) # run at 60 fps
+            self.clock.tick(60)  # run at 60 fps
+
 
 Game().run()
