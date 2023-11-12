@@ -17,30 +17,29 @@ class PhysicsEntity:
         # create a new list so we don't modify or share with another entity
         self.size = list(size)
         self.velocity = [0, 0]
-        self.collisions = {'up': False, 'down': False,
-                           'left': False, 'right': False}
-        self.action = ''
+        self.collisions = {"up": False, "down": False, "left": False, "right": False}
+        self.action = ""
         self.anim_offset = (-3, -3)
         self.flip = False
-        self.set_action('idle')
+        self.set_action("idle")
 
     def set_action(self, action):
         # only change the animation if it's different
         if action != self.action:
             self.action = action
-            self.animation = self.game.assets[self.type +
-                                              '/' + self.action].copy()
+            self.animation = self.game.assets[self.type + "/" + self.action].copy()
             self.animation.frame = 0
 
     def rect(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 
     def update(self, tilemap, movement=(0, 0)):
-        self.collisions = {'up': False, 'down': False,
-                           'left': False, 'right': False}
+        self.collisions = {"up": False, "down": False, "left": False, "right": False}
 
-        frame_movement = [movement[0] + self.velocity[0],
-                          movement[1] + self.velocity[1]]
+        frame_movement = [
+            movement[0] + self.velocity[0],
+            movement[1] + self.velocity[1],
+        ]
 
         # handle x axis movement
         self.pos[0] += frame_movement[0]
@@ -50,10 +49,10 @@ class PhysicsEntity:
                 # if we are moving right and collided with a tile
                 if frame_movement[0] > 0:
                     entity_rect.right = rect.left
-                    self.collisions['right'] = True
+                    self.collisions["right"] = True
                 if frame_movement[0] < 0:
                     entity_rect.left = rect.right
-                    self.collisions['left'] = True
+                    self.collisions["left"] = True
                 self.pos[0] = entity_rect.x
 
         if movement[0] > 0:
@@ -69,17 +68,17 @@ class PhysicsEntity:
                 # if we are moving right and collided with a tile
                 if frame_movement[1] > 0:
                     entity_rect.bottom = rect.top
-                    self.collisions['down'] = True
+                    self.collisions["down"] = True
                 if frame_movement[1] < 0:
                     entity_rect.top = rect.bottom
-                    self.collisions['up'] = True
+                    self.collisions["up"] = True
                 self.pos[1] = entity_rect.y
 
         # apply gravity
         self.velocity[1] = min(MAX_FALL_SPEED, self.velocity[1] + GRAVITY)
 
         # reset y velocity if collided up or down
-        if self.collisions['up'] or self.collisions['down']:
+        if self.collisions["up"] or self.collisions["down"]:
             self.velocity[1] = 0
 
         self.animation.update()
@@ -89,29 +88,29 @@ class PhysicsEntity:
             pygame.transform.flip(self.animation.img(), self.flip, False),
             (
                 self.pos[0] - offset[0] + self.anim_offset[0],
-                self.pos[1] - offset[1] + self.anim_offset[1]
-            )
+                self.pos[1] - offset[1] + self.anim_offset[1],
+            ),
         )
 
 
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
-        super().__init__(game, 'player', pos, size)
+        super().__init__(game, "player", pos, size)
         self.air_time = 0
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement)
         self.air_time += 1
 
-        if self.collisions['down']:
+        if self.collisions["down"]:
             self.air_time = 0
 
         if self.air_time > 4:
             if self.velocity[1] < 0:
-                self.set_action('jump')
+                self.set_action("jump")
             else:
-                self.set_action('fall')
+                self.set_action("fall")
         elif movement[0] != 0:
-            self.set_action('run')
+            self.set_action("run")
         else:
-            self.set_action('idle')
+            self.set_action("idle")
