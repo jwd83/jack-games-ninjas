@@ -9,7 +9,8 @@ https://www.youtube.com/watch?v=2gABYM5M0ww
 
 - Finish DaFluffyPotato's course
 - Finish pallet swap
-- Implement the new fall animation.
+- Port to web with [pygbag](https://pypi.org/project/pygbag/)
+- ~~Implement the new fall animation.~~
 
 ## Adjustments & Additions
 
