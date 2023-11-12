@@ -5,6 +5,12 @@ An adaption and implementation of the the public domain game from YouTuber
 
 https://www.youtube.com/watch?v=2gABYM5M0ww
 
+## Todos
+
+- Finish DaFluffyPotato's course
+- Finish pallet swap
+- Implement the new fall animation.
+
 ## Adjustments & Additions
 
 - 16:9 aspect ratio
