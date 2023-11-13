@@ -29,7 +29,12 @@ class Game:
         # print our loaded assets
         # print(self.assets)
 
+        # attempt to load our tilemap
         self.tilemap = Tilemap(self, tile_size=16)
+        try:
+            self.tilemap.load("map.json")
+        except FileNotFoundError:
+            pass
 
         self.movement = [False, False, False, False]
 
