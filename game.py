@@ -43,6 +43,10 @@ class Game:
         self.player = Player(self, (75, 75), (8, 15))
 
         self.tilemap = Tilemap(self, tile_size=16)
+        try:
+            self.tilemap.load("map.json")
+        except FileNotFoundError:
+            pass
 
         self.movement = [False, False]
 
