@@ -180,7 +180,6 @@ class Game:
                     # if the user presses escape or F5 key, quit the event loop.
                     if event.key == pygame.K_ESCAPE or event.key == pygame.K_F5:
                         self.perform_quit()
-
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.movement[0] = True
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
@@ -191,6 +190,8 @@ class Game:
                         self.movement[3] = True
                     if event.key == pygame.K_o:
                         self.tilemap.save("map.json")
+                    if event.key == pygame.K_t:
+                        self.tilemap.autotile()
                     if event.key == pygame.K_g:
                         self.on_grid = not self.on_grid
                     if event.key == pygame.K_LSHIFT:
