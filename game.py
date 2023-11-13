@@ -1,3 +1,4 @@
+import math
 import random
 import sys
 import pygame
@@ -146,7 +147,6 @@ class Game:
                             "leaf",
                             pos,
                             velocity=[-0.1, 0.3],
-                            # frame=0,
                             frame=random.randint(0, 100),
                         )
                     )
@@ -154,6 +154,8 @@ class Game:
             # handle particle effects
             for particle in self.particles.copy():
                 kill = particle.update()
+                if particle.type == "leaf":
+                    particle.pos[0] += math.sin(particle.animation.frame * 0.035) * 0.3
                 particle.render(self.display, offset=render_scroll)
                 if kill:
                     self.particles.remove(particle)
