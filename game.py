@@ -1,9 +1,11 @@
+import random
 import sys
 import pygame
 from scripts.entities import PhysicsEntity, Player
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
+from scripts.particle import Particle
 
 
 class Game:
@@ -29,11 +31,14 @@ class Game:
             "clouds": load_images("clouds"),
             "player/idle": Animation(load_images("entities/player/idle"), img_dur=8),
             "player/run": Animation(load_images("entities/player/run"), img_dur=4),
-            "player/jump": Animation(load_images("entities/player/jump"), img_dur=5),
+            "player/jump": Animation(load_images("entities/player/jump")),
             "player/fall": Animation(load_images("entities/player/fall")),
-            "player/slide": Animation(load_images("entities/player/slide"), img_dur=5),
+            "player/slide": Animation(load_images("entities/player/slide")),
             "player/wall_slide": Animation(
                 load_images("entities/player/wall_slide"), img_dur=5
+            ),
+            "particle/leaf": Animation(
+                load_images("particles/leaf"), img_dur=20, loop=False
             ),
         }
         # print our loaded assets
@@ -52,6 +57,14 @@ class Game:
 
         # setup our pseudo camera
         self.scroll = [0, 0]
+
+        # setup leaf spawners
+        self.leaf_spawners = []
+        for tree in self.tilemap.extract([("large_decor", 2)], keep=True):
+            self.leaf_spawners.append(
+                pygame.Rect(4 + tree["pos"][0], 4 + tree["pos"][1], 23, 13)
+            )
+        self.particles = []
 
     def perform_quit(self):
         pygame.quit()
@@ -116,11 +129,36 @@ class Game:
             # draw our tilemap
             self.tilemap.render(self.display, offset=render_scroll)
 
+            # update and draw our player
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
 
-            # print(self.tilemap.physics_rects_around(self.player.pos))
+            # spawn leaf particles
+            for rect in self.leaf_spawners:
+                if random.random() * 50000 < rect.width * rect.height:
+                    pos = (
+                        rect.x + random.random() * rect.width,
+                        rect.y + random.random() * rect.height,
+                    )
+                    self.particles.append(
+                        Particle(
+                            self,
+                            "leaf",
+                            pos,
+                            velocity=[-0.1, 0.3],
+                            # frame=0,
+                            frame=random.randint(0, 100),
+                        )
+                    )
 
+            # handle particle effects
+            for particle in self.particles.copy():
+                kill = particle.update()
+                particle.render(self.display, offset=render_scroll)
+                if kill:
+                    self.particles.remove(particle)
+
+            # FRAME COMPLETE
             # we finished drawing our frame, lets render it to the screen and
             # get our input events ready for the next frame and sleep for a bit
             self.screen.blit(
