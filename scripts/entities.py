@@ -120,10 +120,16 @@ class Player(PhysicsEntity):
             self.jumps = self.max_jumps
         else:
             # we are in the air, check if we are colliding with a wall
-            if self.collisions["left"] or self.collisions["right"]:
+            if (
+                self.collisions["left"] or self.collisions["right"]
+            ) and self.air_time > 4:
                 # if we are then we are wall sliding
                 self.wall_slide = True
-                self.velocity[1] = min(0.25, self.velocity[1])  # slow our wall slide
+                # reset our jumps
+                self.jumps = self.max_jumps
+                # slow our wall slide
+                self.velocity[1] = min(0.25, self.velocity[1])
+                # flip our sprite if necessary
                 if self.collisions["right"]:
                     self.Flip = False
                 else:
