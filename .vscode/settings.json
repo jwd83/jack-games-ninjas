@@ -6,6 +6,8 @@
     "collidepoint",
     "colliderect",
     "colorkey",
+    "JOYBUTTONDOWN",
+    "JOYBUTTONUP",
     "KEYUP",
     "Metroid",
     "offgrid",
