@@ -95,8 +95,7 @@ class Game:
 
                 # jump
                 if event.button == 1:
-                    if self.player.velocity[1] >= 0:
-                        self.player.velocity[1] = -3
+                    self.player.jump()
 
                 # left
                 if event.button == 13:
@@ -132,8 +131,7 @@ class Game:
                     or event.key == pygame.K_w
                     or event.key == pygame.K_UP
                 ):
-                    if self.player.velocity[1] >= 0:
-                        self.player.velocity[1] = -3
+                    self.player.jump()
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
