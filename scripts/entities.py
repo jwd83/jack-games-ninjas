@@ -2,6 +2,9 @@ import pygame
 
 GRAVITY = 0.1
 MAX_FALL_SPEED = 5
+JUMP_WALL_REBOUND = 3.3
+JUMP_STANDARD = 3
+JUMP_WALL = 2.5
 
 
 class PhysicsEntity:
@@ -22,6 +25,8 @@ class PhysicsEntity:
         self.anim_offset = (-3, -3)
         self.flip = False
         self.set_action("idle")
+
+        self.last_movement = [0, 0]
 
     def set_action(self, action):
         # only change the animation if it's different
@@ -81,6 +86,7 @@ class PhysicsEntity:
         if self.collisions["up"] or self.collisions["down"]:
             self.velocity[1] = 0
 
+        self.last_movement = movement
         self.animation.update()
 
     def render(self, surf, offset=(0, 0)):
@@ -102,10 +108,23 @@ class Player(PhysicsEntity):
         self.wall_slide = False
 
     def jump(self):
-        if self.jumps or self.space_jump:
+        if self.wall_slide:
+            self.jumps = self.max_jumps - 1
+            # wall jump has less velocity
+            self.velocity[1] = -JUMP_WALL
+            self.air_time = 5
+            # spring off the wall
+            if self.collisions["right"]:
+                self.velocity[0] = -JUMP_WALL_REBOUND
+            else:
+                self.velocity[0] = JUMP_WALL_REBOUND
+            return True  # jump successful
+
+        elif self.jumps or self.space_jump:
             if self.velocity[1] >= 0:
-                self.velocity[1] = -3
+                self.velocity[1] = -JUMP_STANDARD
                 self.jumps -= 1
+                return True  # jump successful
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement)
@@ -148,3 +167,9 @@ class Player(PhysicsEntity):
                 self.set_action("run")
             else:
                 self.set_action("idle")
+
+        # air resistance/friction to slow us down
+        if self.velocity[0] > 0:
+            self.velocity[0] = max(0, self.velocity[0] - 0.1)
+        elif self.velocity[0] < 0:
+            self.velocity[0] = min(0, self.velocity[0] + 0.1)
