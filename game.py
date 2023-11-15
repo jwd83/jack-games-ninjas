@@ -46,7 +46,7 @@ class Game:
                 load_images("entities/player/wall_slide"), img_dur=5
             ),
             "particle/leaf": Animation(
-                load_images("particles/leaf"), img_dur=20, loop=False
+                load_images("particles/leaf"), img_dur=12, loop=False
             ),
         }
         # print our loaded assets
