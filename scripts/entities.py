@@ -109,7 +109,7 @@ class Player(PhysicsEntity):
 
     def jump(self):
         if self.wall_slide:
-            self.jumps = self.max_jumps - 1
+            self.jumps = max(0, self.jumps - 1)
             # wall jump has less velocity
             self.velocity[1] = -JUMP_WALL
             self.air_time = 5
@@ -145,7 +145,7 @@ class Player(PhysicsEntity):
                 # if we are then we are wall sliding
                 self.wall_slide = True
                 # reset our jumps
-                self.jumps = self.max_jumps
+                # self.jumps = self.max_jumps
                 # slow our wall slide
                 self.velocity[1] = min(0.25, self.velocity[1])
                 # flip our sprite if necessary
