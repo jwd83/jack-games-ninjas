@@ -99,6 +99,7 @@ class Player(PhysicsEntity):
         self.air_time = 0
         self.jumps = self.max_jumps = 2
         self.space_jump = False
+        self.wall_slide = False
 
     def jump(self):
         if self.jumps or self.space_jump:
@@ -108,18 +109,36 @@ class Player(PhysicsEntity):
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement)
-        self.air_time += 1
 
+        # handle wall slide
+        self.wall_slide = False
+
+        # check for floor collision
+        self.air_time += 1
         if self.collisions["down"]:
             self.air_time = 0
             self.jumps = self.max_jumps
-
-        if self.air_time > 4:
-            if self.velocity[1] < 0:
-                self.set_action("jump")
-            else:
-                self.set_action("fall")
-        elif movement[0] != 0:
-            self.set_action("run")
         else:
-            self.set_action("idle")
+            # we are in the air, check if we are colliding with a wall
+            if self.collisions["left"] or self.collisions["right"]:
+                # if we are then we are wall sliding
+                self.wall_slide = True
+                self.velocity[1] = min(0.25, self.velocity[1])  # slow our wall slide
+                if self.collisions["right"]:
+                    self.Flip = False
+                else:
+                    self.Flip = True
+
+        # set our animation
+        if self.wall_slide:
+            self.set_action("wall_slide")
+        else:
+            if self.air_time > 4:
+                if self.velocity[1] < 0:
+                    self.set_action("jump")
+                else:
+                    self.set_action("fall")
+            elif movement[0] != 0:
+                self.set_action("run")
+            else:
+                self.set_action("idle")
