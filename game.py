@@ -84,6 +84,40 @@ class Game:
             if event.type == pygame.QUIT:
                 self.perform_quit()
 
+            # handle controller mappings
+            # dpad up is 11
+            # left is 13
+            # right is 14
+
+            # handle controller button down
+            if event.type == pygame.JOYBUTTONDOWN:
+                print(event)
+
+                # jump
+                if event.button == 1:
+                    if self.player.velocity[1] >= 0:
+                        self.player.velocity[1] = -3
+
+                # left
+                if event.button == 13:
+                    self.movement[0] = True
+
+                # right
+                if event.button == 14:
+                    self.movement[1] = True
+
+            # handle controller button up
+            if event.type == pygame.JOYBUTTONUP:
+                print(event)
+                # left
+                if event.button == 13:
+                    self.movement[0] = False
+
+                # right
+                if event.button == 14:
+                    self.movement[1] = False
+
+            # check for keyboard events
             if event.type == pygame.KEYDOWN:
                 # if the user presses escape or F5 key, quit the event loop.
                 if event.key == pygame.K_ESCAPE or event.key == pygame.K_F5:
