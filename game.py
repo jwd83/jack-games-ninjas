@@ -14,6 +14,13 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Jack Ninjas!")
 
+        # connect a controller
+        pygame.joystick.init()
+        self.joysticks = [
+            pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())
+        ]
+        print("self.joysticks=", self.joysticks)
+
         # set our output windows size
         self.screen = pygame.display.set_mode((1280, 720))
 

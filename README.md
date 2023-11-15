@@ -9,6 +9,7 @@ https://www.youtube.com/watch?v=2gABYM5M0ww
 
 - Finish DaFluffyPotato's course
 - Finish pallet swap
+- Joystick input
 - Port to web with [pygbag](https://pypi.org/project/pygbag/)
 - ~~Implement the new fall animation.~~
 
