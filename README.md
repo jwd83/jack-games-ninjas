@@ -10,6 +10,7 @@ An adaption and implementation of the the public domain game from YouTuber
 - Finish DaFluffyPotato's course
 - Finish pallet swap
 - Joystick input
+- Alucard style movement trails
 - Port to web with [pygbag](https://pypi.org/project/pygbag/)
 - ~~Implement the new fall animation.~~
 
